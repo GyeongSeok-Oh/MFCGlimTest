@@ -40,8 +40,12 @@ BOOL CDlgImage::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	MoveWindow(0, 0, 700, 540);
-	initImage();
+	int nWidth = 700;
+	int nHeight = 540;
+	int nBpp = 8;
+
+	MoveWindow(0, 0, nWidth, nHeight);
+	initImage(nWidth, nHeight, nBpp);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -59,11 +63,8 @@ void CDlgImage::OnPaint()
 	}
 }
 
-void CDlgImage::initImage() {
+void CDlgImage::initImage(int nWidth, int nHeight, int nBpp) {
 
-	int nWidth = 700;
-	int nHeight = 540;
-	int nBpp = 8;
 	m_Image.Create(nWidth, -nHeight, nBpp);
 
 	if (nBpp == 8) {
