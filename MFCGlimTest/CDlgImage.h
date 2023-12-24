@@ -15,6 +15,8 @@ public:
 
 	CWnd* m_pParent;
 	CImage m_Image;
+	CArray<CPoint, CPoint&> m_BorderLine;
+	CPoint m_Center;
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
@@ -30,7 +32,7 @@ public:
 	afx_msg void OnPaint();
 	void initImage(int nWidth, int nHeight, int nBpp);
 	afx_msg void OnBnClickedCancel();
-	void DrawCircle(CDC* cd, int x, int y, int radius);
-	void DrawCross(CDC* cd, int x, int y, int radius);
+	void DrawCircle(CDC* cd);
+	void DrawCross(CDC* cd);
 
 };

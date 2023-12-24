@@ -43,4 +43,6 @@ protected:
 public:
 	afx_msg void OnBnClickedPlay();
 	afx_msg void OnDestroy();
+
+	void SetBorderLine(int x, int y, int radius, int nPitch);
 };

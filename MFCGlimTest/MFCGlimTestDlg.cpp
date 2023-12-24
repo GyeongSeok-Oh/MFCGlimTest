@@ -173,13 +173,15 @@ HCURSOR CMFCGlimTestDlg::OnQueryDragIcon()
 void CMFCGlimTestDlg::OnBnClickedPlay()
 {
 	// 자식 객체 윈도우 클라이언트 영역 선언
-	CClientDC dc(m_pDlgImage);
-	
+	//CClientDC dc(m_pDlgImage);
+	m_pDlgImage->m_BorderLine.RemoveAll();
 	unsigned char* fm = (unsigned char*)m_pDlgImage->m_Image.GetBits();
 	int nWidth = m_pDlgImage->m_Image.GetWidth();
 	int nHeight = m_pDlgImage->m_Image.GetHeight();
 	int nPitch = m_pDlgImage->m_Image.GetPitch();
-	dc.FillSolidRect(0, 0, nWidth, nHeight, RGB(255, 255, 255));
+	memset(fm, COLOR_BLACK, nWidth * nHeight);
+
+	//dc.FillSolidRect(0, 0, nWidth, nHeight, RGB(255, 255, 255));
 
 	// 반지름 값 받아오기
 	CString n_RadiusString;
@@ -195,8 +197,11 @@ void CMFCGlimTestDlg::OnBnClickedPlay()
 		int x, y;
 
 		while (true) {
-			x = rand() % nWidth;
-			y = rand() % nHeight;
+			x = rand() % (nWidth - n_Radius * 2) + n_Radius;
+			y = rand() % (nHeight - n_Radius * 2) + n_Radius;
+
+			m_pDlgImage->m_Center.x = x;
+			m_pDlgImage->m_Center.y = y;
 
 			if (x - n_Radius >= 0 && x + n_Radius <= nWidth && y - n_Radius >= 0 && y + n_Radius <= nHeight) {
 				break;
@@ -209,10 +214,25 @@ void CMFCGlimTestDlg::OnBnClickedPlay()
 		GetDlgItem(IDC_CENTER_POINT)->SetWindowText(text);
 
 		// 원그리기
-		m_pDlgImage->DrawCircle(&dc, x, y, n_Radius);
+		//m_pDlgImage->DrawCircle(&dc, x, y, n_Radius);
 
+		// 원 테두리 배열에 저장
+		SetBorderLine(x, y, n_Radius, nPitch);
 		// 십자선 그리기
-		m_pDlgImage->DrawCross(&dc, x, y, n_Radius);
+		//m_pDlgImage->DrawCross(&dc, x, y, n_Radius);
+	}
+}
+
+void CMFCGlimTestDlg::SetBorderLine(int x, int y, int n_Radius, int nPitch)
+{
+	int nBlack = 0;
+	unsigned char* fm = (unsigned char*)m_pDlgImage->m_Image.GetBits();
+
+	for (int j = y - n_Radius; j <= y + n_Radius; j++) {
+		for (int i = x - n_Radius; i <= x + n_Radius; i++) {
+			fm[nPitch * j + i] = nBlack;
+			m_pDlgImage->m_BorderLine.Add(CPoint(i, j));
+		}
 	}
 }
 

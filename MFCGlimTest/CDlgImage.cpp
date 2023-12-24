@@ -61,6 +61,8 @@ void CDlgImage::OnPaint()
 	if (m_Image) {
 		m_Image.Draw(dc, 0, 0);
 	}
+	DrawCircle(&dc);
+	DrawCross(&dc);
 }
 
 void CDlgImage::initImage(int nWidth, int nHeight, int nBpp) {
@@ -77,11 +79,13 @@ void CDlgImage::initImage(int nWidth, int nHeight, int nBpp) {
 	int nPitch = m_Image.GetPitch();
 	unsigned char* fm = (unsigned char*)m_Image.GetBits();
 
-	for (int j = 0; j < nHeight; j++) {
+	/*for (int j = 0; j < nHeight; j++) {
 		for (int i = 0; i < nWidth; i++) { 
 			fm[j * nPitch + i] = 255;
 		}
-	}
+	}*/
+
+	memset(fm, COLOR_BLACK, nWidth * nHeight);
 }
 
 
@@ -91,24 +95,36 @@ void CDlgImage::OnBnClickedCancel()
 	CDialogEx::OnCancel();
 }
 
-void CDlgImage::DrawCircle(CDC* cd, int x, int y, int radius)
+void CDlgImage::DrawCircle(CDC* cd)
 {
 	// 원 그리는 색 설정
-	int penWidth = 5;
+	/*int penWidth = 5;
 	CPen yellowPen(PS_SOLID, penWidth, RGB(255, 255, 0));
 	CPen* oldPen = cd->SelectObject(&yellowPen);
 
 	cd->Ellipse(x - radius, y - radius, x + radius, y + radius);
-	cd->SelectObject(oldPen);
+	cd->SelectObject(oldPen);*/
+
+	int size = m_BorderLine.GetSize();
+	CRect rect;
+
+	for (int i = 0; i < size; i++) {
+		CPoint point = m_BorderLine.GetAt(i);
+		rect.SetRect(point, point);
+		rect.InflateRect(1, 1);
+
+		cd->FillRect(rect, &CBrush(COLOR_YELLOW));
+	}
+
 }
 
-void CDlgImage::DrawCross(CDC* cd, int x, int y, int radius)
+void CDlgImage::DrawCross(CDC* cd)
 {
-	int crossSize = radius / 5;
+	/*int crossSize = radius / 5;
 	if (crossSize < 5) {
 		crossSize = 5;
 	}
-
+	
 	// 수직 선 그리기
 	cd->MoveTo(x, y - crossSize); // 시작선
 	cd->LineTo(x, y + crossSize + 1); // 라인을 그리는것
@@ -116,4 +132,15 @@ void CDlgImage::DrawCross(CDC* cd, int x, int y, int radius)
 	// 수평 선 그리기
 	cd->MoveTo(x - crossSize, y);
 	cd->LineTo(x + crossSize + 1, y);
+	*/
+
+	CRect rect;
+
+	for(int i = 0; i < 1; i++) {
+		rect.SetRect(m_Center, m_Center);
+		rect.InflateRect(2, 2);
+		cd->FillRect(rect, &CBrush(COLOR_BLACK));
+	}
+
+	
 }
