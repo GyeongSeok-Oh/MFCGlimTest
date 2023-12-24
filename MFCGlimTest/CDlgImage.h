@@ -17,6 +17,8 @@ public:
 	CImage m_Image;
 	CArray<CPoint, CPoint&> m_BorderLine;
 	CPoint m_Center;
+	CArray<CPoint, CPoint&> m_Vertical;
+	CArray<CPoint, CPoint&> m_Horizon;
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME

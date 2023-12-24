@@ -175,6 +175,7 @@ void CMFCGlimTestDlg::OnBnClickedPlay()
 	// 자식 객체 윈도우 클라이언트 영역 선언
 	//CClientDC dc(m_pDlgImage);
 	m_pDlgImage->m_BorderLine.RemoveAll();
+
 	unsigned char* fm = (unsigned char*)m_pDlgImage->m_Image.GetBits();
 	int nWidth = m_pDlgImage->m_Image.GetWidth();
 	int nHeight = m_pDlgImage->m_Image.GetHeight();
@@ -220,6 +221,9 @@ void CMFCGlimTestDlg::OnBnClickedPlay()
 		SetBorderLine(x, y, n_Radius, nPitch);
 		// 십자선 그리기
 		//m_pDlgImage->DrawCross(&dc, x, y, n_Radius);
+		SetCrossLine(x, y, n_Radius);
+
+		m_pDlgImage->Invalidate();
 	}
 }
 
@@ -230,9 +234,43 @@ void CMFCGlimTestDlg::SetBorderLine(int x, int y, int n_Radius, int nPitch)
 
 	for (int j = y - n_Radius; j <= y + n_Radius; j++) {
 		for (int i = x - n_Radius; i <= x + n_Radius; i++) {
-			fm[nPitch * j + i] = nBlack;
-			m_pDlgImage->m_BorderLine.Add(CPoint(i, j));
+
+			bool bRet = false;
+
+			double dX = i - x;
+			double dY = j - y;
+			double dDist = dX * dX + dY * dY;
+			// 원 테두리 두께 설정
+			int nThick = 2;
+
+			if (dDist <= n_Radius * n_Radius && dDist >= (n_Radius - nThick) * (n_Radius - nThick)) {
+				bRet = true;
+			}
+			if (bRet) {
+				fm[nPitch * j + i] = nBlack;
+				m_pDlgImage->m_BorderLine.Add(CPoint(i, j));
+			}
+			
 		}
+	}
+}
+
+void CMFCGlimTestDlg::SetCrossLine(int x, int y, int n_Radius)
+{
+	int nBlack = 0;
+	unsigned char* fm = (unsigned char*)m_pDlgImage->m_Image.GetBits();
+	int nPitch = m_pDlgImage->m_Image.GetPitch();
+
+	// 수직선 그리기
+	for (int j = y - (n_Radius / 2); j <= y + (n_Radius / 2); j++) {
+		fm[nPitch * j + x] = nBlack;
+		m_pDlgImage->m_Vertical.Add(CPoint(x, j));
+	}
+
+	// 수평선 그리기
+	for (int i = x - (n_Radius / 2); i <= x + (n_Radius / 2); i++) {
+		fm[nPitch * y + i] = nBlack;
+		m_pDlgImage->m_Horizon.Add(CPoint(i, y));
 	}
 }
 
